@@ -30,6 +30,8 @@
 		"eamodio.gitlens",
 		"VisualStudioExptTeam.vscodeintellicode",
 		"VisualStudioExptTeam.intellicode-api-usage-examples",
-		"SonarSource.sonarlint-vscode"
+		"SonarSource.sonarlint-vscode",
+		"dan-c-underwood.arm",
+		"ZixuanWang.linkerscript"
 	]
 }
