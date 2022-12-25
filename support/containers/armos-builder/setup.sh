@@ -2,7 +2,7 @@
 
 yes | unminimize && apt update
 
-apt install curl git vim -y
+apt install curl -y
 
 mkdir /buildsrc
 cd /buildsrc
