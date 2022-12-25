@@ -1,0 +1,2 @@
+# Dev Container reference options
+https://containers.dev/implementors/json_reference/
