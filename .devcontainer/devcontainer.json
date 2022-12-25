@@ -11,7 +11,7 @@
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	"features": {
 		"ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
-			"packages": "qemu-system-arm,hexedit,git,vim"
+			"packages": "qemu-system-arm,hexedit,git,vim,gdb,make"
 		}
 	},
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
@@ -32,6 +32,7 @@
 		"VisualStudioExptTeam.intellicode-api-usage-examples",
 		"SonarSource.sonarlint-vscode",
 		"dan-c-underwood.arm",
-		"ZixuanWang.linkerscript"
+		"ZixuanWang.linkerscript",
+		"ms-vscode.makefile-tools"
 	]
 }
