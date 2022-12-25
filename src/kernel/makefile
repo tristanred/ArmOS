@@ -33,3 +33,9 @@ linker: prepare bootloader kernel
 .PHONY: clean
 clean:
 	rm -rf $(OUTDIR) $(BUILDDIR)
+
+debug: build
+	qemu-system-aarch64 -M raspi3b -kernel $(OUTDIR)myos.elf -nographic -s -S
+
+run: build
+	qemu-system-aarch64 -M raspi3b -kernel $(OUTDIR)myos.elf -nographic
