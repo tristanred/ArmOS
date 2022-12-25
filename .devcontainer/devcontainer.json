@@ -29,7 +29,6 @@
 		"eamodio.gitlens",
 		"VisualStudioExptTeam.vscodeintellicode",
 		"VisualStudioExptTeam.intellicode-api-usage-examples",
-		"SonarSource.sonarlint-vscode",
-		"TabNine.tabnine-vscode"
+		"SonarSource.sonarlint-vscode"
 	]
 }
