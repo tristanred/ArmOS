@@ -2,11 +2,12 @@
 // README at: https://github.com/devcontainers/templates/tree/main/src/ubuntu
 {
 	"name": "Ubuntu",
+	"image": "ghcr.io/tristanred/armos-builder:latest",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"build": {
-		// Path is relataive to the devcontainer.json file.
-		"dockerfile": "../support/containers/armos-builder/Dockerfile",
-	},
+	// "build": {
+	// 	// Path is relataive to the devcontainer.json file.
+	// 	"dockerfile": "../support/containers/armos-builder/Dockerfile"
+	// },
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	"features": {
 		"ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
