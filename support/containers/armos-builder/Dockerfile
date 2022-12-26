@@ -24,4 +24,4 @@ ENV PATH="$PREFIX/bin:$PATH"
 
 COPY --from=build "/ArmOS" "/ArmOS"
 
-RUN apt update && apt install bison flex libgmp3-dev libmpc-dev libmpfr-dev texinfo -y && rm -rf /etc/apt/sources.list.d/*.list
+RUN apt update && apt install bison flex libgmp3-dev libmpc-dev libmpfr-dev texinfo make -y && rm -rf /etc/apt/sources.list.d/*.list

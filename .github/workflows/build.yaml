@@ -1,0 +1,25 @@
+name: 'Build and publish OS'
+
+on:
+  push:
+    # branches:
+    #   - main
+    #   - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: ghcr.io/tristanred/armos-builder:latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Build
+        run: make build
+        working-directory: ./src/kernel
+
+      - name: Package
+        uses: actions/upload-artifact@v3
+        with:
+          name: Output
+          path: ./src/kernel/out/**
