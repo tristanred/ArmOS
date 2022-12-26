@@ -21,7 +21,7 @@ build: prepare bootloader kernel linker
 	aarch64-elf-objcopy $(OUTDIR)myos.elf -O binary $(OUTDIR)kernel8.img
 
 bootloader: prepare boot.s
-	$(AS) -c boot.S -o $(BUILDDIR)boot.o $(ASFLAGS)
+	$(AS) -c boot.s -o $(BUILDDIR)boot.o $(ASFLAGS)
 
 kernel: prepare kernel.c
 	$(CC) -c *.c $(CFLAGS)
