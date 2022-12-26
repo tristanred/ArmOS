@@ -11,7 +11,7 @@
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	"features": {
 		"ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
-			"packages": "qemu-system-arm,hexedit,git,vim,gdb,make"
+			"packages": "qemu-system-arm,hexedit,git,vim,gdb-multiarch,make"
 		}
 	},
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
