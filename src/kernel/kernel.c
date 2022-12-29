@@ -1,6 +1,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#define AARCH64 1
+
 static uint32_t MMIO_BASE;
 
 // The MMIO area base address, depends on board type
