@@ -23,12 +23,12 @@ build: prepare bootloader kernel linker
 bootloader: prepare boot.s
 	$(AS) -c boot.s -o $(BUILDDIR)boot.o $(ASFLAGS)
 
-kernel: prepare kernel.c
+kernel: prepare
 	$(CC) -c *.c $(CFLAGS)
 	mv *.o $(BUILDDIR)
 
-linker: prepare bootloader kernel
-	$(CC) -T linker.ld -o $(OUTDIR)myos.elf $(BUILDDIR)boot.o $(BUILDDIR)kernel.o $(LFLAGS)
+linker: prepare kernel bootloader
+	$(CC) -T linker.ld -o $(OUTDIR)myos.elf $(BUILDDIR)*.o $(LFLAGS)
 
 .PHONY: clean
 clean:
