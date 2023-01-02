@@ -18,7 +18,7 @@ prepare:
 	mkdir -p $(OUTDIR)
 
 build: prepare bootloader kernel linker
-	aarch64-elf-objcopy $(OUTDIR)myos.elf -O binary $(OUTDIR)kernel8.img
+	aarch64-elf-objcopy $(OUTDIR)myos.elf -O binary $(OUTDIR)myos.img
 
 bootloader: prepare boot.s
 	$(AS) -c boot.s -o $(BUILDDIR)boot.o $(ASFLAGS)
@@ -35,7 +35,7 @@ clean:
 	rm -rf $(OUTDIR) $(BUILDDIR)
 
 debug: build
-	qemu-system-aarch64 -M raspi3b -kernel $(OUTDIR)myos.elf -nographic -s -S
+	qemu-system-aarch64 -M raspi3b -kernel $(OUTDIR)myos.img -nographic -s -S -d int
 
 run: build
-	qemu-system-aarch64 -M raspi3b -kernel $(OUTDIR)myos.elf -nographic
+	qemu-system-aarch64 -M raspi3b -kernel $(OUTDIR)myos.img -nographic

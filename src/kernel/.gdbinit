@@ -23,3 +23,8 @@ layout regs
 tui reg general
 break kernel_main
 break drop_from_el3
+break el2_start
+break cpu_one_start
+break after_stack_change
+break _start
+continue
