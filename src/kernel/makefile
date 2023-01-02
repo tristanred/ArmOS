@@ -4,8 +4,8 @@ CC=aarch64-elf-gcc
 
 ### FLAGS ###
 ASFLAGS=-g
-CFLAGS=-std=gnu99 -ffreestanding -g3 -Og -O0 -Wall -Wextra
-LFLAGS=-ffreestanding -Og -nostdlib -lgcc
+CFLAGS=-ffreestanding -nostdlib -nostartfiles -g3 -Og -O0 -Wall -Wextra
+LFLAGS=-ffreestanding -Og -nostdlib -nostartfiles
 
 ### DIRECTORIES ###
 BUILDDIR=build/
