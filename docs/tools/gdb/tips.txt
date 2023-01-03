@@ -1,0 +1,4 @@
+Useful commands
+===============
+update
+* Update the source window and the current execution point.
