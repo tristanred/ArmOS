@@ -1,0 +1,17 @@
+================
+Useful shortcuts
+
+How to quit the application:
+CTRL-A, X
+
+Open the QEmu monitor
+CTRL-A, C
+
+
+==========
+Weird Shit
+
+There are differences when booting from the .elf file and the .img file. If
+starting from the .elf file the CurrentEL will be 12 (EL3) but if starting from
+the .img the CurrentEL will be 8 (EL2). No idea why but I guess Qemu does some
+runtime checks.
