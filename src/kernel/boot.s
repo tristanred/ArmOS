@@ -55,24 +55,17 @@ check_el2:
 
     b kernel_handoff
 
-// asdasd
 drop_from_el3:
     // ELR = Exception Link Register. The address to return to from an exception
     // level. Ex: calling eret from EL2 will go to address ELR_EL2
     adr x0, drop_to_el1 // Read address of target return function in x0
     msr ELR_EL3, x0     // Load start addr in the ELR register
 
-    mov x0, 0x3c4       // Set bits 9-8-7-6 and 2.
-                        // 9 = Debug exception
-                        // 8 = SError interrupt mask
-                        // 7 = IRQ interrupt mask
-                        // 6 = FIQ interrupt mask
-                        // 2 = EL1t, no idea what it means
-    msr SPSR_EL3, x0    // Set SPSR to indicate using SP stored in SP_EL2
+    mov x0, 0b1001      // No idea why I need to do this
+    msr SPSR_EL3, x0
 
-    // At the moment, we keep stack pointers between EL1, EL2 and EL3
-    mov x0, sp          // Store out current stack pointer in x0
-    msr SP_EL2, x0      // Point EL2's SP to our current EL3 SP
+    mov x0, #0x70000    // Set EL2 stack pointer
+    msr SP_EL2, x0
 
     eret                // Return out of EL3 into EL2
 
@@ -80,25 +73,18 @@ drop_from_el2:
     adr x0, drop_to_el1 // Read address of target return function in x0
     msr ELR_EL2, x0     // Load target function address in ELR_EL2
 
-    mov x0, 0x3c4       // Set bits 9-8-7-6 and 2.
-                        // 9 = Debug exception
-                        // 8 = SError interrupt mask
-                        // 7 = IRQ interrupt mask
-                        // 6 = FIQ interrupt mask
-                        // 2 = EL1t, no idea what it means
-    msr SPSR_EL2, x0    // Set SPSR to indicate using SP stored in SP_EL2
+    mov x0, 0b0101      // No idea why I need to do this
+    msr SPSR_EL2, x0
 
-    // At the moment, we keep stack pointers between EL1, EL2 and EL3
-    //mov x0, sp          // Store out current stack pointer in x0
-    mov x0, 0x70000
-    msr SP_EL1, x0      // Point EL1's SP to our current EL2 SP
+    mov x0, #0x70000
+    msr SP_EL1, x0      // Set EL1 stack pointer
 
     eret
 
     // jump to C code, should not return
 kernel_handoff:
 
-    svc #756
+    hvc #756            // Goes to address 0x82400 instead of 0x82000
 
     bl      kernel_main
     // for failsafe, halt this core too
@@ -106,6 +92,118 @@ kernel_handoff:
 
     .balign 4096
 interrupt_vectors_el1:
+    // ## Section 1 : Exception from the current EL while using SP_EL0 ##
+    // synchronous
+    .align  7
+    mov     x0, #0
+    mrs     x1, esr_el1
+    mrs     x2, elr_el1
+    mrs     x3, spsr_el1
+    mrs     x4, far_el1
+    b       exc_handler
+
+    // IRQ
+    .align  7
+    mov     x0, #1
+    mrs     x1, esr_el1
+    mrs     x2, elr_el1
+    mrs     x3, spsr_el1
+    mrs     x4, far_el1
+    b       exc_handler
+
+    // FIQ
+    .align  7
+    mov     x0, #2
+    mrs     x1, esr_el1
+    mrs     x2, elr_el1
+    mrs     x3, spsr_el1
+    mrs     x4, far_el1
+    b       exc_handler
+
+    // SError
+    .align  7
+    mov     x0, #3
+    mrs     x1, esr_el1
+    mrs     x2, elr_el1
+    mrs     x3, spsr_el1
+    mrs     x4, far_el1
+    b       exc_handler
+
+    // ## Section 2 : Exception from the current EL while using SP_ELx ##
+    // synchronous
+    .align  7
+    mov     x0, #0
+    mrs     x1, esr_el1
+    mrs     x2, elr_el1
+    mrs     x3, spsr_el1
+    mrs     x4, far_el1
+    b       exc_handler
+
+    // IRQ
+    .align  7
+    mov     x0, #1
+    mrs     x1, esr_el1
+    mrs     x2, elr_el1
+    mrs     x3, spsr_el1
+    mrs     x4, far_el1
+    b       exc_handler
+
+    // FIQ
+    .align  7
+    mov     x0, #2
+    mrs     x1, esr_el1
+    mrs     x2, elr_el1
+    mrs     x3, spsr_el1
+    mrs     x4, far_el1
+    b       exc_handler
+
+    // SError
+    .align  7
+    mov     x0, #3
+    mrs     x1, esr_el1
+    mrs     x2, elr_el1
+    mrs     x3, spsr_el1
+    mrs     x4, far_el1
+    b       exc_handler
+
+    // ## Section 3 : Exception from a lower EL and at least one lower EL is AArch64 ##
+    // synchronous
+    .align  7
+    mov     x0, #0
+    mrs     x1, esr_el1
+    mrs     x2, elr_el1
+    mrs     x3, spsr_el1
+    mrs     x4, far_el1
+    b       exc_handler
+
+    // IRQ
+    .align  7
+    mov     x0, #1
+    mrs     x1, esr_el1
+    mrs     x2, elr_el1
+    mrs     x3, spsr_el1
+    mrs     x4, far_el1
+    b       exc_handler
+
+    // FIQ
+    .align  7
+    mov     x0, #2
+    mrs     x1, esr_el1
+    mrs     x2, elr_el1
+    mrs     x3, spsr_el1
+    mrs     x4, far_el1
+    b       exc_handler
+
+    // SError
+    .align  7
+    mov     x0, #3
+    mrs     x1, esr_el1
+    mrs     x2, elr_el1
+    mrs     x3, spsr_el1
+    mrs     x4, far_el1
+    b       exc_handler
+
+    // ## Section 4 : Exception from a lower EL and at least one lower EL is AArch64 ##
     // synchronous
     .align  7
     mov     x0, #0
@@ -144,6 +242,118 @@ interrupt_vectors_el1:
 
     .balign 4096
 interrupt_vectors_el2:
+    // ## Section 1 : Exception from the current EL while using SP_EL0 ##
+    // synchronous
+    .align  7
+    mov     x0, #0
+    mrs     x1, esr_el2
+    mrs     x2, elr_el2
+    mrs     x3, spsr_el2
+    mrs     x4, far_el2
+    b       exc_handler
+
+    // IRQ
+    .align  7
+    mov     x0, #1
+    mrs     x1, esr_el2
+    mrs     x2, elr_el2
+    mrs     x3, spsr_el2
+    mrs     x4, far_el2
+    b       exc_handler
+
+    // FIQ
+    .align  7
+    mov     x0, #2
+    mrs     x1, esr_el2
+    mrs     x2, elr_el2
+    mrs     x3, spsr_el2
+    mrs     x4, far_el2
+    b       exc_handler
+
+    // SError
+    .align  7
+    mov     x0, #3
+    mrs     x1, esr_el2
+    mrs     x2, elr_el2
+    mrs     x3, spsr_el2
+    mrs     x4, far_el2
+    b       exc_handler
+
+    // ## Section 2 : Exception from the current EL while using SP_ELx ##
+    // synchronous
+    .align  7
+    mov     x0, #0
+    mrs     x1, esr_el2
+    mrs     x2, elr_el2
+    mrs     x3, spsr_el2
+    mrs     x4, far_el2
+    b       exc_handler
+
+    // IRQ
+    .align  7
+    mov     x0, #1
+    mrs     x1, esr_el2
+    mrs     x2, elr_el2
+    mrs     x3, spsr_el2
+    mrs     x4, far_el2
+    b       exc_handler
+
+    // FIQ
+    .align  7
+    mov     x0, #2
+    mrs     x1, esr_el2
+    mrs     x2, elr_el2
+    mrs     x3, spsr_el2
+    mrs     x4, far_el2
+    b       exc_handler
+
+    // SError
+    .align  7
+    mov     x0, #3
+    mrs     x1, esr_el2
+    mrs     x2, elr_el2
+    mrs     x3, spsr_el2
+    mrs     x4, far_el2
+    b       exc_handler
+
+    // ## Section 3 : Exception from a lower EL and at least one lower EL is AArch64 ##
+    // synchronous
+    .align  7
+    mov     x0, #0
+    mrs     x1, esr_el2
+    mrs     x2, elr_el2
+    mrs     x3, spsr_el2
+    mrs     x4, far_el2
+    b       exc_handler
+
+    // IRQ
+    .align  7
+    mov     x0, #1
+    mrs     x1, esr_el2
+    mrs     x2, elr_el2
+    mrs     x3, spsr_el2
+    mrs     x4, far_el2
+    b       exc_handler
+
+    // FIQ
+    .align  7
+    mov     x0, #2
+    mrs     x1, esr_el2
+    mrs     x2, elr_el2
+    mrs     x3, spsr_el2
+    mrs     x4, far_el2
+    b       exc_handler
+
+    // SError
+    .align  7
+    mov     x0, #3
+    mrs     x1, esr_el2
+    mrs     x2, elr_el2
+    mrs     x3, spsr_el2
+    mrs     x4, far_el2
+    b       exc_handler
+
+    // ## Section 4 : Exception from a lower EL and at least one lower EL is AArch64 ##
     // synchronous
     .align  7
     mov     x0, #0

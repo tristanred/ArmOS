@@ -33,15 +33,5 @@ break after_stack_change
 break kernel_handoff
 break exc_handler
 
-break boot.s:99
-break boot.s:108
-break boot.s:117
-break boot.s:126
-
-break boot.s:137
-break boot.s:146
-break boot.s:155
-break boot.s:164
-
 # Start the program up until the first breakpoint ( _start )
 continue
