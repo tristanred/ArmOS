@@ -1,5 +1,6 @@
 #include "mmu.h"
 
+#include "sysregs/id_aa64mmfr0_el1.h"
 #include "sysregs/sctlr_el1.h"
 #include "sysregs/tcr_el1.h"
 
@@ -24,28 +25,21 @@ void disable_mmu() {
 }
 
 BOOL granule_supported(enum GRSZ value) {
+    uint64_t capacities = 0;
 
-    uint64_t val = 0;
-
-    asm volatile("mrs %0, ID_AA64MMFR0_EL1" : "=r"(val));
+    asm volatile("mrs %0, ID_AA64MMFR0_EL1" : "=r"(capacities));
 
     // Granule 4k and 64k indicate "not supported" by containing 0xF, granule
-    // 16k indicates by containing 0.
+    // 16k by containing 0.
     switch (value) {
         case GRAN4: {
-            uint64_t gran4_value = (value & 0xF0000000) >> 28;
-
-            return gran4_value != 0xF;
+            return read_id_aa64mmfr0_el1().tgran4 != 0xF;
         }
         case GRAN16: {
-            uint64_t gran16_value = (value & 0xF00000) >> 20;
-
-            return gran16_value != 0xF;
+            return read_id_aa64mmfr0_el1().tgran16 != 0x0;
         }
         case GRAN64: {
-            uint64_t gran64_value = (value & 0xF000000) >> 24;
-
-            return gran64_value != 0;
+            return read_id_aa64mmfr0_el1().tgran64 != 0xF;
         }
         default:
             return FALSE;

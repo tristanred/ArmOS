@@ -29,8 +29,6 @@ tui reg general
 
 # Set breakpoints
 break kernel_main
-break after_stack_change
-break kernel_handoff
 break exc_handler
 
 # Start the program up until the first breakpoint ( _start )

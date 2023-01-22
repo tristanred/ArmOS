@@ -84,8 +84,6 @@ drop_from_el2:
     // jump to C code, should not return
 kernel_handoff:
 
-    hvc #756            // Goes to address 0x82400 instead of 0x82000
-
     bl      kernel_main
     // for failsafe, halt this core too
     b       1b
