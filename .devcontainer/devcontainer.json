@@ -32,7 +32,6 @@
 		"VisualStudioExptTeam.intellicode-api-usage-examples",
 		"SonarSource.sonarlint-vscode",
 		"dan-c-underwood.arm",
-		"ZixuanWang.linkerscript",
-		"ms-vscode.makefile-tools"
+		"ZixuanWang.linkerscript"
 	]
 }
