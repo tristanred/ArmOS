@@ -3,3 +3,6 @@ https://wiki.osdev.org/ARM
 
 # OSDev wiki on RaspPi
 https://wiki.osdev.org/ARM_RaspberryPi
+
+# AARCH64 instructions list
+https://developer.arm.com/documentation/dui0801/g/A64-General-Instructions?lang=en

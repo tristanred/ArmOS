@@ -1,0 +1,18 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "/ArmOS/opt/cross/lib/gcc/aarch64-elf/12.2.0/include"
+            ],
+            "defines": [
+                "__STDC_HOSTED__=0"
+            ],
+            "compilerPath": "/ArmOS/opt/cross/bin/aarch64-elf-gcc",
+            "intelliSenseMode": "linux-gcc-arm64",
+            "cStandard": "c99",
+            "cppStandard": "c++11"
+        }
+    ],
+    "version": 4
+}
