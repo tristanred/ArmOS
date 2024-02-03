@@ -30,6 +30,7 @@ tui reg general
 # Set breakpoints
 break kernel_main
 break exc_handler
+break _start
 
 # Start the program up until the first breakpoint ( _start )
-continue
+# continue

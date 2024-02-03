@@ -1,4 +1,4 @@
-FROM ubuntu:22.04 as build
+FROM ubuntu:noble as build
 LABEL org.opencontainers.image.source https://github.com/tristanred/ArmOS
 
 ENV DEBIAN_FRONTEND=noninteractive
@@ -15,7 +15,7 @@ ENV PATH="$PREFIX/bin:$PATH"
 WORKDIR /buildsrc
 RUN bash /build.sh
 
-FROM ubuntu:22.04
+FROM ubuntu:noble
 
 # Have to redo env ?
 ENV PREFIX="/ArmOS/opt/cross"

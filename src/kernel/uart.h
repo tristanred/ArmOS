@@ -1,7 +1,6 @@
 #ifndef UART_H
 #define UART_H
 
-
 void uart_init(int raspi);
 
 void uart_putc(unsigned char c);

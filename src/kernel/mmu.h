@@ -11,6 +11,8 @@ enum GRSZ {
     GRAN64
 };
 
+void setup_mmu();
+
 uint64_t read_tcr();
 
 void write_tcr(uint64_t value);

@@ -28,8 +28,9 @@ after_stack_change:
     ldr x0, =interrupt_vectors_el1
     msr VBAR_EL1, x0
 
-    ldr x0, =interrupt_vectors_el2
-    msr VBAR_EL2, x0
+    # Had this previous code before, we start on EL1 so this can't be called.
+    # ldr x0, =interrupt_vectors_el2
+    # msr VBAR_EL2, x0
 
     // clear bss
     ldr     x1, =__bss_start

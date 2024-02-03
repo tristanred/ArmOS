@@ -35,7 +35,7 @@ clean:
 	rm -rf $(OUTDIR) $(BUILDDIR)
 
 debug: build
-	qemu-system-aarch64 -M raspi3b -kernel $(OUTDIR)myos.img -nographic -s -S -d int
+	qemu-system-aarch64 -M virt -cpu cortex-a76 -kernel $(OUTDIR)myos.img -nographic -s -S -d int
 
 run: build
 	qemu-system-aarch64 -M raspi3b -kernel $(OUTDIR)myos.img -nographic

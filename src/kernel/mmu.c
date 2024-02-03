@@ -4,6 +4,11 @@
 #include "sysregs/sctlr_el1.h"
 #include "sysregs/tcr_el1.h"
 
+void setup_mmu() {
+    // Set granule size in TCR_EL1.TG0
+}
+
+
 uint64_t read_tcr() {
     uint64_t val = 0;
 
