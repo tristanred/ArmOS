@@ -1,6 +1,6 @@
 SECTIONS
 {
-    . = 0x40080000;
+    . = 0x80000;
     .text : { KEEP(*(.text.boot)) *(.text .text.* .gnu.linkonce.t*) }
     .rodata : { *(.rodata .rodata.* .gnu.linkonce.r*) }
     . = ALIGN(4096);
