@@ -28,9 +28,9 @@ layout regs
 tui reg general
 
 # Set breakpoints
-break kernel_main
+# break kernel_main
 break exc_handler
-break _start
+break setup_mmu
 
 # Start the program up until the first breakpoint ( _start )
 # continue

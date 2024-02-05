@@ -16,6 +16,8 @@ void kernel_main(uint64_t dtb_ptr32, uint64_t x1, uint64_t x2, uint64_t x3) {
 
     int res = test(1, 2, "test");
 
+    setup_mmu();
+
     // initialize UART for Raspi2
     uart_init(3);
     uart_puts("Hello, kernel World!\r\n");

@@ -1,9 +1,18 @@
-Board = rpi3B+
+Model = rpi3B+
 https://www.raspberrypi.com/products/raspberry-pi-3-model-b-plus/
 
-CPU = BCM2837B0
+Board = BCM2837B0
 https://www.raspberrypi.com/documentation/computers/processors.html#bcm2837b0
 
-ARM Profile = Cortex-A53
+CPU = Cortex-A53 ARMv8
 
-ABI = ARMv8
+
+
+
+
+Model = rpi4B
+https://www.raspberrypi.com/products/raspberry-pi-4-model-b/
+
+Board = BCM2711
+
+CPU = Cortex-A72 ARMv8

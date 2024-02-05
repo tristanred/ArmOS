@@ -1,0 +1,12 @@
+Page size = 4KB
+
+Address range 4GB
+
+Using this scheme, we need 3 levels of translation tables.
+The L1 tables map 1GB of memory each. We only need 4 of these tables.
+
+The next level of tables map 2MB of memory each. We need 512 of these tables (2MB * 512 = 1GB).
+
+For each L2 table, we need 512 entries, each of which maps 4KB of memory (512 * 4KB = 2MB).
+
+Given that each entry is 64 bits, the total size of all the page tables we need to commit to a 4GB address space is: 4 * 512 * 512 * 8 bytes = 8MB (L3) + 4 * 512 * 8 = 16KB (L2) + 4 * 8 = 32B (L1).
