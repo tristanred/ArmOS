@@ -1,8 +1,12 @@
 #include "mmu.h"
 
+#include "kernel_log.h"
 #include "sysregs/id_aa64mmfr0_el1.h"
 #include "sysregs/sctlr_el1.h"
 #include "sysregs/tcr_el1.h"
+#include "sysregs/ttbr0_el1.h"
+
+#pragma GCC diagnostic ignored "-Wunused-variable"
 
 const int RAM_START = 0x1000; // Start at 4KB
 const int RAM_END = 0x3f000000;
@@ -25,7 +29,12 @@ void setup_mmu() {
     BOOL gran16_supported = granule_supported(GRAN16);
     BOOL gran64_supported = granule_supported(GRAN64);
 
+    kprintf("Granule 4KB supported: %b\n", gran4_supported);
+    kprintf("Granule 16KB supported: %b\n", gran16_supported);
+    kprintf("Granule 64KB supported: %b\n", gran64_supported);
+
     union tcr_el1 tcr = read_tcr_el1();
+    (void)tcr;
 
     // Write values
     // T0SZ = 32. Amount of bits to shift the input address by. (No idea what
@@ -73,6 +82,8 @@ void setup_mmu() {
     for (int i = 0; i < 4; i++) {
         for (int k = 0; k < 512; k++) {
             uint64_t table_index = i;
+            (void)table_index;
+
             uint64_t entry_index = k + (i * 512);
 
             uint64_t addr_flags =
@@ -92,9 +103,12 @@ void setup_mmu() {
             l3_table[entry_index] = addr_flags;
         }
     }
+
+    safe_write_ttbr0_el1(.baddr = (uint64_t)l1_table);
 }
 
 uint64_t* alloc_range(uint64_t start, uint64_t size, uint64_t alignment_bits) {
+    (void)size;
     return (uint64_t*)(RAM_START + (start & ~(alignment_bits)));
 }
 

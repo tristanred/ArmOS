@@ -4,6 +4,9 @@
 #include <stddef.h>
 #include <stdint.h>
 
+// TODO: For now
+#pragma GCC diagnostic ignored "-Wint-to-pointer-cast"
+
 static uint32_t MMIO_BASE;
 
 // The MMIO area base address, depends on board type
