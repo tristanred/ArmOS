@@ -1,0 +1,34 @@
+name: 'Build and Publish Armos Builder'
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+    paths:
+      support/containers/armos-builder/**
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Using special Github Action to isolate the branch name without
+      # the refs/heads/ prefix
+      - name: Branch Names
+        id: branch-names
+        uses: tj-actions/branch-names@v8
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build
+        run: docker build -t ghcr.io/tristanred/armos-builder:${{ steps.branch-names.outputs.current_branch }} .
+        working-directory: support/containers/armos-builder
+
+      - name: Publish
+        run: docker push ghcr.io/tristanred/armos-builder:${{ steps.branch-names.outputs.current_branch }}
+
+      # Tag commits in main as 'latest'
+      - name: Publish Latest
+        run: docker tag ghcr.io/tristanred/armos-builder:${{ github.ref }} ghcr.io/tristanred/armos-builder:latest
+        if: steps.branch-names.outputs.current_branch == 'main'
