@@ -3,6 +3,9 @@
 .global _start
 
 _start:
+    mov x0, 0x300000 // Set the bits for FPEN
+    msr cpacr_el1, x0 // Write to the CPACR_EL1 register
+
     // read cpu id, stop slave cores
     mrs     x1, mpidr_el1
     and     x1, x1, #3
