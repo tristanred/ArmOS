@@ -4,7 +4,7 @@
 #include "sysregs/sctlr_el1.h"
 #include "sysregs/tcr_el1.h"
 
-const int RAM_START = 0x0;
+const int RAM_START = 0x1000; // Start at 4KB
 const int RAM_END = 0x3f000000;
 const int RAM_SZ = RAM_END - RAM_START;
 
@@ -17,11 +17,8 @@ void setup_mmu() {
     // Usable ram goes from 0x0 to 000000003f000000. The range for devices is
     // 000000003f000000-000000003fffffff
 
-    int* ram_start = (int*)0x0;
-    int* ram_end = (int*)0x3f000000;
-
-    int ram_start_value = *ram_start;
-    int ram_end_value = *ram_end;
+    int ram_start_value = RAM_START;
+    int ram_end_value = RAM_END;
 
     // Report on each granule support
     BOOL gran4_supported = granule_supported(GRAN4);
@@ -43,27 +40,57 @@ void setup_mmu() {
     // TODO: Current issue, each table need to be aligned on a 4K (granule size)
     // boundary.
 
+    // The below tables, the pointer to each table is a pointer to the first
+    // element of the table.That's why we don't need a uint64_t**. That also
+    // means that we can't use the [] operator to access the elements of the
+    // table.
+
     // We need 1 L1 table with 4 entries, each entry points to an L2 table.
     uint64_t l1_table_size = 4 * sizeof(uint64_t);
-    uint64_t* l1_table = alloc_range(0x0, l1_table_size, ALIGN_FLAG_4KB);
+    uint64_t* l1_table =
+        alloc_range((uint64_t)0x0, l1_table_size, ALIGN_FLAG_4KB);
 
     // We need 4 L2 tables with 512 entries each.
+    //
     uint64_t l2_table_size = 512 * 4 * sizeof(uint64_t);
-    uint64_t* l2_table =
-        alloc_range(l1_table + l2_table_size, l2_table_size, ALIGN_FLAG_4KB);
+    uint64_t* l2_table = alloc_range((uint64_t)l1_table + l2_table_size,
+                                     l2_table_size, ALIGN_FLAG_4KB);
 
     // We need 512 L3 tables with 512 entries each.
-    uint64_t l3_table_size = 512 * 512 * sizeof(uint64_t);
-    uint64_t* l3_table =
-        alloc_range(l2_table + l2_table_size, l3_table_size, ALIGN_FLAG_4KB);
+    uint64_t l3_table_size = 512 * 512 * 4 * sizeof(uint64_t);
+    uint64_t* l3_table = alloc_range((uint64_t)l2_table + l2_table_size,
+                                     l3_table_size, ALIGN_FLAG_4KB);
 
-    // Setup the L1 table
+    // Setup the L1 table entries
     for (int i = 0; i < 4; i++) {
         // Each entry stores the address of an L2 table.
-        l1_table[i] = (uint64_t)l2_table + (i * 512 * sizeof(uint64_t));
+        uint64_t addr_flags = (uint64_t)l2_table + (i * 512 * sizeof(uint64_t));
+
+        l1_table[i] = addr_flags;
     }
 
-    for (int i = 0; i < 512; i++) {
+    // For each entry we have populated, create 512 entries in the L2 table
+    for (int i = 0; i < 4; i++) {
+        for (int k = 0; k < 512; k++) {
+            uint64_t table_index = i;
+            uint64_t entry_index = k + (i * 512);
+
+            uint64_t addr_flags =
+                (uint64_t)l3_table + (k * 512 * sizeof(uint64_t));
+            l2_table[entry_index] = addr_flags;
+        }
+    }
+
+    // Populate the 2048 L3 tables and 1048576 entries
+    for (int i = 0; i < 512 * 4; i++) {
+        for (int k = 0; k < 512; k++) {
+            uint64_t table_index = i;
+            uint64_t entry_index = k + (i * 512);
+
+            uint64_t addr_flags =
+                (table_index << 21) | (entry_index << 12) | 0x3;
+            l3_table[entry_index] = addr_flags;
+        }
     }
 }
 
@@ -96,8 +123,8 @@ BOOL granule_supported(enum GRSZ value) {
 
     asm volatile("mrs %0, ID_AA64MMFR0_EL1" : "=r"(capacities));
 
-    // Granule 4k and 64k indicate "not supported" by containing 0xF, granule
-    // 16k by containing 0.
+    // Granule 4k and 64k indicate "not supported" by containing 0xF,
+    // granule 16k by containing 0.
     switch (value) {
         case GRAN4: {
             return read_id_aa64mmfr0_el1().tgran4 == 0x0;

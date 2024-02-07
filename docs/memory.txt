@@ -10,3 +10,35 @@ The next level of tables map 2MB of memory each. We need 512 of these tables (2M
 For each L2 table, we need 512 entries, each of which maps 4KB of memory (512 * 4KB = 2MB).
 
 Given that each entry is 64 bits, the total size of all the page tables we need to commit to a 4GB address space is: 4 * 512 * 512 * 8 bytes = 8MB (L3) + 4 * 512 * 8 = 16KB (L2) + 4 * 8 = 32B (L1).
+
+
+
+
+
+Example paging for 4 GB
+
+L1 Table 1 - Entry 0 // First GB
+L1 Table 1 - Entry 1 // Second GB
+L1 Table 1 - Entry 2 // Third GB
+L1 Table 1 - Entry 3 // Fourth GB
+
+L2 Table 1 - Entry 0 // First 2MB of First GB       **POINTER TO TABLE L2_1**
+L2 Table 1 - Entry 1 // Second 2MB of First GB
+L2 Table 1 - Entry 2 // Third 2MB of First GB
+L2 Table 1 - Entry 3 // Fourth 2MB of First GB
+... <512 Entries> ...
+L2 Table 2 - Entry 0 // First 2MB of Second GB      **POINTER TO TABLE L2_2**
+L2 Table 2 - Entry 1 // Second 2MB of Second GB
+L2 Table 2 - Entry 2 // Third 2MB of Second GB
+L2 Table 2 - Entry 3 // Fourth 2MB of Second GB
+... <512 Entries> ...
+L2 Table 3 - Entry 0 // First 2MB of Third GB       **POINTER TO TABLE L2_3**
+L2 Table 3 - Entry 1 // Second 2MB of Third GB
+L2 Table 3 - Entry 2 // Third 2MB of Third GB
+L2 Table 3 - Entry 3 // Fourth 2MB of Third GB
+... <512 Entries> ...
+L2 Table 4 - Entry 0 // First 2MB of Fourth GB      **POINTER TO TABLE L2_4**
+L2 Table 4 - Entry 1 // Second 2MB of Fourth GB
+L2 Table 4 - Entry 2 // Third 2MB of Fourth GB
+L2 Table 4 - Entry 3 // Fourth 2MB of Fourth GB
+... <512 Entries> ...
