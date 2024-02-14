@@ -55,12 +55,13 @@ void setup_mmu() {
     // table.
 
     // We need 1 L1 table with 4 entries, each entry points to an L2 table.
+    // This table needs to be 4K aligned
     uint64_t l1_table_size = 4 * sizeof(uint64_t);
     uint64_t* l1_table =
-        alloc_range((uint64_t)0x0, l1_table_size, ALIGN_FLAG_4KB);
+    alloc_range((uint64_t)0x0, l1_table_size, ALIGN_FLAG_4KB);
 
     // We need 4 L2 tables with 512 entries each.
-    //
+    // Each table needs to be table aligned
     uint64_t l2_table_size = 512 * 4 * sizeof(uint64_t);
     uint64_t* l2_table = alloc_range((uint64_t)l1_table + l2_table_size,
                                      l2_table_size, ALIGN_FLAG_4KB);
@@ -75,7 +76,7 @@ void setup_mmu() {
         // Each entry stores the address of an L2 table.
         uint64_t addr_flags = (uint64_t)l2_table + (i * 512 * sizeof(uint64_t));
 
-        l1_table[i] = addr_flags;
+        l1_table[i] = addr_flags | 0b11;
     }
 
     // For each entry we have populated, create 512 entries in the L2 table
@@ -88,6 +89,7 @@ void setup_mmu() {
 
             uint64_t addr_flags =
                 (uint64_t)l3_table + (k * 512 * sizeof(uint64_t));
+
             l2_table[entry_index] = addr_flags;
         }
     }
@@ -100,11 +102,14 @@ void setup_mmu() {
 
             uint64_t addr_flags =
                 (table_index << 21) | (entry_index << 12) | 0x3;
+
             l3_table[entry_index] = addr_flags;
         }
     }
 
     safe_write_ttbr0_el1(.baddr = (uint64_t)l1_table);
+
+    safe_write_sctlr_el1(.m = 1, .c = 1, .i = 1);
 }
 
 uint64_t* alloc_range(uint64_t start, uint64_t size, uint64_t alignment_bits) {
